@@ -13,5 +13,41 @@
     </ion-toolbar>
   </ion-header>
 
+      <body>
+        <div id="container">
+            <div id="map"></div>
+
+            <div id="recherche">
+                <form>
+                    <select class="option-critere">
+                        <option value="nom_commercial">Nom commercial</option>
+                        <option value="nom_station">Nom station</option>
+                        <option value="commune">Commune</option>
+                        <option value="id_station">Id station</option>
+                        <option value="nom_amenageur">Aménageur</option>
+                        <option value="nom_operateur">Opérateur</option>
+                    </select>
+
+                    <input type="text" name="search" class="critere" placeholder="tapez ici">
+
+                    <button type="submit" class="src-button">Rechercher</button>
+                </form>
+
+                <button id="btn-geo" title="Borne la plus proche">📍</button>
+            </div>
+
+            <div id="barre_laterale" class="fermee">
+                <button id="btn-fermer">✕</button>
+                <div id="infos"></div>
+            </div>
+        </div>
+    </body>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="./js/scriptMap.js"></script>
+
   <app-explore-container name="Tab 4 page"></app-explore-container>
 </ion-content>
