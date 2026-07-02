@@ -1,8 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 4
-    </ion-title>
+    <ion-title>Tab 4</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,41 +11,40 @@
     </ion-toolbar>
   </ion-header>
 
-      <body>
-        <div id="container">
-            <div id="map"></div>
+  <div id="container">
+    <div id="map"></div>
 
-            <div id="recherche">
-                <form>
-                    <select class="option-critere">
-                        <option value="Nom">Nom</option>
-                        <option value="CodeInsee">INSEE</option>
-                        <option value="CodePostal">Code Postal</option>
-                        <option value="Population">Population</option>
-                        <option value="Superficie">Superficie</option>
-                        <option value="DensitéPopulation">Densité Population</option>
-                    </select>
+    <div id="recherche">
+      <form (submit)="onSearch($event)">
+        <select class="option-critere" #critereSelect>
+          <option value="Nom">Nom</option>
+          <option value="CodeInsee">INSEE</option>
+          <option value="CodePostal">Code Postal</option>
+          <option value="Population">Population</option>
+          <option value="Superficie">Superficie</option>
+          <option value="DensitéPopulation">Densité Population</option>
+        </select>
 
-                    <input type="text" name="search" class="critere" placeholder="tapez ici">
+        <input
+          type="text"
+          name="search"
+          class="critere"
+          placeholder="tapez ici"
+          #critereInput
+          (input)="onInputChange(critereInput.value)"
+        />
 
-                    <button type="submit" class="src-button">Rechercher</button>
-                </form>
+        <button type="submit" class="src-button">Rechercher</button>
+      </form>
 
-                <button id="btn-geo" title="Borne la plus proche">📍</button>
-            </div>
+      <button id="btn-geo" title="Borne la plus proche" (click)="geoLocaliser()">
+        {{ geoIcon }}
+      </button>
+    </div>
 
-            <div id="barre_laterale" class="fermee">
-                <button id="btn-fermer">✕</button>
-                <div id="infos"></div>
-            </div>
-        </div>
-    </body>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-     crossorigin=""></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="./js/scriptMap.js"></script>
-
-  <app-explore-container name="Tab 4 page"></app-explore-container>
+    <div id="barre_laterale" [class.fermee]="sidebarFermee">
+      <button id="btn-fermer" (click)="fermerSidebar()">✕</button>
+      <div id="infos" [innerHTML]="infosHtml"></div>
+    </div>
+  </div>
 </ion-content>
