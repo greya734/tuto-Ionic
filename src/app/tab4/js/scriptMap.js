@@ -25,30 +25,39 @@ function haversine(lat1, lon1, lat2, lon2) {
 }
 
 // --- Affiche les infos d'une station dans la barre latérale ---
-function afficherStation(station, distance) {
+function afficherStation(commune, distance) {
     var distTxt = distance !== undefined
         ? `<li>📍 Distance : <strong>${distance < 1 ? (distance * 1000).toFixed(0) + ' m' : distance.toFixed(2) + ' km'}</strong></li>`
         : '';
     document.getElementById('infos').innerHTML = `
-        <h2>${station.nom_station}</h2>
-        <p>Id : ${station.id_station}</p>
+        <h2>${commune.Nom}</h2>
+        <p>Id : ${commune.CodeInsee}</p>
         <table>
             <thead>
                <tr>
-                  <th>Commune</th>
-                  <th>Adresse</th>
-                  <th>Points de charge</th>
-                  <th>Opérateur</th>
-                  <th>Observations</th>
+                  <th>Nom</th>
+                  <th>CodeInsee</th>
+                  <th>Code Postal</th>
+                  <th>Population</th>
+                  <th>Superficie</th>
+                  <th>Densité Population</th>
+                  <th>Latitude</th>
+                  <th>Longitude</th>
+                  <th>Province</th>
                 </tr>
             </thead>
             <tbody>
                <tr>
-                   <td>${station.commune}</td>
-                   <td>${station.adresse_station}</td>
-                   <td>${station.nb_points_charge}</td>
-                   <td>${station.nom_operateur}</td>
-                   <td>${station.observations_stations ?? '—'} </td>
+                   <td>${commune.Nom}</td>
+                   <td>${commune.CodeInsee}</td>
+                   <td>${commune.CodePostal}</td>
+                   <td>${commune.Population}</td>
+                   <td>${commune.Superficie}</td>
+                   <td>${commune.DensitéPopulation}</td>
+                   <td>${commune.latitude}</td>
+                   <td>${commune.longitude}</td>
+                   <td>${commune.Province}</td>
+
                 </tr>
             </tbody>
         </table>
