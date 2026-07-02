@@ -170,7 +170,7 @@ export class Tab4Page implements AfterViewInit, OnDestroy {
           iconAnchor: [8, 8],
         });
 
-        this.userMarker = L.marker([userLat, userLon], { icon: userIcon })
+        this.userMarker = L.marker([userLat, userLon])
           .addTo(this.map)
           .bindPopup('<b>Vous êtes ici</b>')
           .openPopup();
