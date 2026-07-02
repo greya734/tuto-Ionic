@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -9,17 +9,16 @@ import {
 } from '@ionic/angular/standalone';
 import * as L from 'leaflet';
 
-interface Station {
+interface Commune {
   Nom: string;
-  CodeInsee: string;
-  CodePostal: string;
-  Population: string;
+  CodeInsee: number;
+  CodePostal: number;
+  Population: number;
   Superficie: string;
   DensitéPopulation: string;
   latitude: string;
   longitude: string;
   Province: string;
-  geo_point_2d: { lat: number; lon: number };
 }
 
 @Component({
@@ -31,7 +30,7 @@ interface Station {
 })
 export class Tab4Page implements AfterViewInit, OnDestroy {
   private map!: L.Map;
-  private allStations: Station[] = [];
+  private allCommunes: Commune[] = [];
   private allMarkers: L.Marker[] = [];
   private userMarker: L.Marker | null = null;
   private nearestLine: L.Polyline | null = null;
@@ -44,7 +43,7 @@ export class Tab4Page implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.initMap();
-    this.chargerStations();
+    this.chargerCommunes();
   }
 
   ngOnDestroy(): void {
@@ -67,24 +66,24 @@ export class Tab4Page implements AfterViewInit, OnDestroy {
     setTimeout(() => this.map.invalidateSize(), 200);
   }
 
-  private chargerStations(): void {
-    fetch('assets/data/placeholder.json')
+  private chargerCommunes(): void {
+    fetch('assets/data/communes.json')
       .then((res) => res.json())
-      .then((data) => {
-        console.log('Total :', data.total_count);
+      .then((data: Commune[]) => {
+        console.log('Total :', data.length);
 
-        data.results.forEach((station: Station) => {
-          const marker = L.marker([station.geo_point_2d.lat, station.geo_point_2d.lon]).addTo(
-            this.map
-          );
+        data.forEach((commune) => {
+          const lat = parseFloat(commune.latitude);
+          const lon = parseFloat(commune.longitude);
+          const marker = L.marker([lat, lon]).addTo(this.map);
 
-          this.allStations.push(station);
+          this.allCommunes.push(commune);
           this.allMarkers.push(marker);
 
-          marker.on('click', () => this.afficherStation(station));
+          marker.on('click', () => this.afficherCommune(commune));
         });
       })
-      .catch((err) => console.error('Erreur chargement stations :', err));
+      .catch((err) => console.error('Erreur chargement communes :', err));
   }
 
   private haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -100,7 +99,7 @@ export class Tab4Page implements AfterViewInit, OnDestroy {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
-  private afficherStation(commune: Station, distance?: number): void {
+  private afficherCommune(commune: Commune, distance?: number): void {
     const distTxt =
       distance !== undefined
         ? `<li>📍 Distance : <strong>${
@@ -177,25 +176,25 @@ export class Tab4Page implements AfterViewInit, OnDestroy {
           .openPopup();
 
         let minDist = Infinity;
-        let nearest: Station | null = null;
+        let nearest: Commune | null = null;
 
-        this.allStations.forEach((station, i) => {
+        this.allCommunes.forEach((commune, i) => {
           if (!this.map.hasLayer(this.allMarkers[i])) return;
 
           const d = this.haversine(
             userLat,
             userLon,
-            station.geo_point_2d.lat,
-            station.geo_point_2d.lon
+            parseFloat(commune.latitude),
+            parseFloat(commune.longitude)
           );
           if (d < minDist) {
             minDist = d;
-            nearest = station;
+            nearest = commune;
           }
         });
 
         if (!nearest) {
-          alert('Aucune borne visible sur la carte.');
+          alert('Aucune commune visible sur la carte.');
           this.geoIcon = '📍';
           return;
         }
@@ -203,13 +202,16 @@ export class Tab4Page implements AfterViewInit, OnDestroy {
         this.nearestLine = L.polyline(
           [
             [userLat, userLon],
-            [(nearest as Station).geo_point_2d.lat, (nearest as Station).geo_point_2d.lon],
+            [
+              parseFloat((nearest as Commune).latitude),
+              parseFloat((nearest as Commune).longitude),
+            ],
           ],
           { color: '#00e5ff', weight: 2, dashArray: '6 6', opacity: 0.8 }
         ).addTo(this.map);
 
         this.map.fitBounds(this.nearestLine.getBounds(), { padding: [60, 60] });
-        this.afficherStation(nearest, minDist);
+        this.afficherCommune(nearest, minDist);
 
         this.geoIcon = '📍';
       },
@@ -242,8 +244,8 @@ export class Tab4Page implements AfterViewInit, OnDestroy {
 
   private filtrer(): void {
     this.allMarkers.forEach((marker, index) => {
-      const station = this.allStations[index] as any;
-      const champ = String(station[this.critereActuel] ?? '').toLowerCase();
+      const commune = this.allCommunes[index] as any;
+      const champ = String(commune[this.critereActuel] ?? '').toLowerCase();
 
       if (this.valeurActuelle === '' || champ.includes(this.valeurActuelle)) {
         if (!this.map.hasLayer(marker)) marker.addTo(this.map);
