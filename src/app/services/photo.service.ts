@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 @Injectable({
@@ -15,5 +14,4 @@ export class PhotoService {
       quality: 100,
     });
   }
-
 }
