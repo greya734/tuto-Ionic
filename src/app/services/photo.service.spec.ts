@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-
+import type { Photo } from '@capacitor/camera';
 import { PhotoService } from './photo.service';
 
 describe('PhotoService', () => {
